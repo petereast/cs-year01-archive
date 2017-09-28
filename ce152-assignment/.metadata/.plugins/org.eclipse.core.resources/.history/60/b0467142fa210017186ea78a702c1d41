@@ -1,0 +1,158 @@
+package Assignment;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class Exercise5 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//exercise5a();
+		//exercise5b();
+		exercise5c();
+
+	}
+	
+	public static void exercise5a(){
+		Hill x = new Hill(255, "Ben Nevis", "Highland", 1344.5, 56.796849, -5.003525);
+		System.out.println(x);
+	}
+	
+	public static void exercise5b(){
+		
+		List<Hill> hills = readHills();
+		
+		int count = 0;
+		
+		while(count < 20){
+			System.out.println(hills.get(count));
+			count++;
+		}
+		
+	}
+	
+	public static void exercise5c(){
+		
+		// Get a list of hills
+
+		List<Hill> hills = readHills();
+		
+		
+		// Searchable list of hills
+		
+		String[] msg = {"Enter a hill name or the word \"quit\" to exit.", "Exited", "Total results: "};
+		String inputBuffer = "";
+		
+		int resultsCount = 0;
+		
+		
+		System.out.println(msg[0]);
+		Scanner input = new Scanner(System.in);
+		
+		while(!(inputBuffer = input.nextLine().toLowerCase()).equals("quit")){
+			for(Hill h: hills){
+				if(h.name.toLowerCase().substring(0, inputBuffer.length()).equals(inputBuffer)){
+					System.out.println(h);
+					resultsCount++;
+				}
+			}
+			System.out.println(msg[2]+resultsCount);
+			resultsCount=0;
+			System.out.println(msg[0]);
+		}
+		System.out.println(msg[1]);
+		
+		
+	}
+
+	public static List<Hill> readHills(){
+		
+		final String fileUrl = "https://orb.essex.ac.uk/ce/ce152/data/assign/hills.csv";
+		Scanner file = null;
+		URL url;
+		try {
+			url = new URL(fileUrl);
+			file = new Scanner(url.openConnection().getInputStream());
+		} catch (IOException e){
+			System.err.println(e.getMessage());		
+		}
+			
+		// Open the file (load from Internet maybe?)
+		
+		
+		
+		List<Hill> outputHills = new LinkedList<Hill>();
+		String line;
+		
+		int failcount = 0;
+		
+		// For each line:
+		while(file.hasNext() && (line = file.nextLine())!= null){
+			//System.out.println(line);
+		//		split into parts,
+			String[] items = line.split(",");			
+		//		write each of those parts to a new Hill
+		//		add that new Hill to the list
+			try{
+				outputHills.add(new Hill(Integer.parseInt(items[0]),
+						items[1],
+						items[2],
+						Double.parseDouble(items[3]),
+						Double.parseDouble(items[4]),
+						Double.parseDouble(items[5])));
+			} catch (NumberFormatException e) {
+				if(failcount < 1){
+					// This row is invalid, and probably is the first row
+					// this shouldn't happen again
+					failcount++;
+					continue;
+				} else{
+					//Something's wrong here...
+					e.printStackTrace();
+				}
+			}
+		}
+		
+ 		
+		//		if the line is not in this format, skip the line
+		file.close();
+		return outputHills;
+		
+	}
+
+}
+
+class Hill implements Comparable<Hill>{
+	
+	int number;
+	String name;
+	String countryName;
+	double height;
+	double latitude;
+	double longitude;
+	
+	Hill( int number, String name, String countryName, double height, double longitude, double latitude){
+		this.number = number;
+		this.name = name;
+		this.countryName = countryName;
+		this.height = height;
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
+	public String toString(){
+		return this.number+","+this.name+","+this.countryName+","+this.height+","+this.longitude+","+this.latitude;
+	}
+	
+	public int compareTo(Hill o){
+				
+		return 0;
+	}
+	
+}

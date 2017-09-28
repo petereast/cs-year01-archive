@@ -1,0 +1,95 @@
+package Assignment;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class Exercise5 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		exercise5a();
+		
+		readHills();
+		
+
+	}
+	
+	public static void exercise5a(){
+		Hill x = new Hill(255, "Ben Nevis", "Highland", 1344.5, 56.796849, -5.003525);
+		System.out.println(x);
+	}
+	
+	public static void exercise5b(){
+		
+	}
+
+	public static List<Hill> readHills(){
+		
+		final String fileUrl = "https://orb.essex.ac.uk/ce/ce152/data/assign/hills.csv";
+		Scanner file = null;
+		URL url;
+		try {
+			url = new URL(fileUrl);
+			file = new Scanner(url.openConnection().getInputStream());
+		} catch (IOException e){
+			System.err.println(e.getMessage());		
+		}
+			
+		// Open the file (load from Internet maybe?)
+		
+		
+		
+		List<Hill> outputHills = new LinkedList<Hill>();
+		String line;
+		
+		// For each line:
+		while(file.hasNext() && (line = file.nextLine())!= null){
+			//System.out.println(line);
+		//		split into parts,
+			String[] items = line.split(",");			
+		//		write each of those parts to a new Hill
+		//		add that new Hill to the list
+			outputHills.add(new Hill(Integer.parseInt(items[0]),
+					items[1],
+					items[2],
+					Double.parseDouble(items[3]),
+					Double.parseDouble(items[4]),
+					Double.parseDouble(items[5])));
+		}
+ 		
+		//		if the line is not in this format, skip the line
+		file.close();
+		return null;
+		
+	}
+
+}
+
+class Hill{
+	
+	int number;
+	String name;
+	String countryName;
+	double height;
+	double latitude;
+	double longitude;
+	
+	Hill( int number, String name, String countryName, double height, double longitude, double latitude){
+		this.number = number;
+		this.name = name;
+		this.countryName = countryName;
+		this.height = height;
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
+	public String toString(){
+		return this.number+","+this.name+","+this.countryName+","+this.height+","+this.longitude+","+this.latitude;
+	}
+}

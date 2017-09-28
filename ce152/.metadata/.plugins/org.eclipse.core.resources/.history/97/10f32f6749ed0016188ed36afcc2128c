@@ -1,0 +1,11 @@
+package lab3;
+
+public class Arrays {
+
+	public static int[] reverse (int[] A)
+	{
+		
+		
+		return A;
+	}
+}

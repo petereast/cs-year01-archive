@@ -1,0 +1,24 @@
+package lab3;
+
+public class Arrays {
+
+	public static int[] reverse (int[] A)
+	{
+		int[] temp = new int[A.length];
+		int i = 1;
+		for(int x: A){
+			temp[A.length - i] = x;
+			i++;
+		}
+		return temp;
+	}
+	
+	public static void reverse2(int[] A){
+		int[] B = A;
+		int i;
+		for(i = A.length-1; i >= 0; i--){
+			System.out.println(B);
+			A[i] = B[B.length-1-i];
+		}
+	}
+}

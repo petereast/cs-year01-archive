@@ -1,0 +1,15 @@
+package lab3;
+
+public class Arrays {
+
+	public static int[] reverse (int[] A)
+	{
+		int[] temp = new int[A.length];
+		int i = 0;
+		for(int x: A){
+			temp[A.length - i] = x;
+			i++;
+		}
+		return temp;
+	}
+}

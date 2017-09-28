@@ -1,0 +1,432 @@
+package Assignment;
+
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.LayoutManager;
+import java.awt.Panel;
+import java.awt.RenderingHints.Key;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.LayoutStyle;
+
+public class Exercise4 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		// Reads the maze files as # and ' ' bitmap format
+		System.out.println("Exercise 4 - Peter East");
+
+		
+		Maze one = new Maze("maze61.txt");
+		
+		one.draw();
+		
+		System.out.println(one);
+	}
+	
+
+}
+
+class Maze{
+	
+	
+	public int[] dimensions = {0, 0};
+	
+	public boolean[][] map;
+	
+	public Maze(String filename){
+		this.map = getMazeMap(filename);
+	}
+	
+	public void draw(){
+		graphicMaze gm = new graphicMaze(this, null);
+		gm.mshow(this);
+	}
+	
+	class graphicMaze extends JComponent implements KeyListener{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public final int height = 600+30;
+		public final int width = 600;
+		
+		public Maze parent;
+		
+		public Player playerOne;
+		public Player goal; //Noncontrollable goal of the map
+		final JFrame f = new JFrame("Maze");
+
+		
+		public void mshow(Maze parent){
+			
+			this.playerOne = new Player(parent);
+			
+			this.parent = parent;
+			// Create the maze as a Java2d graphics object			
+			f.setSize(height, width);
+			f.setLayout(new BorderLayout(5, 5));
+			
+			graphicMaze gm = new graphicMaze(this.parent, this.playerOne);
+			gm.setPreferredSize(new Dimension(width-30, height-30));
+
+			JButton reset_button = new JButton("Reset");
+			reset_button.setPreferredSize(new Dimension(width, 30));
+			// The reset button is the only component which can be focused on in this window,
+			// this means it should always be focused and thus should be an appropriate element
+			// to attach the movement logic to.
+			reset_button.addKeyListener(this);
+			// Obviously, the function of the reset button is to send the player back  to it's starting
+			// position
+			reset_button.addActionListener(new ResetButtonListener(this.playerOne, this));
+			
+			
+			JPanel p = new JPanel(new BorderLayout(1, 2));
+						
+			p.add(gm, BorderLayout.PAGE_START);
+			
+			p.add(reset_button, BorderLayout.PAGE_END);
+			
+			
+			f.getContentPane().add(p);
+			
+			//f.setLayout()
+			f.pack();
+			
+			// TODO: Implement reset button -- URGENT
+			
+			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			f.setVisible(true);
+			
+			// Activate keyboard event listener logic for player movement.
+			
+			//f.addKeyListener(this);
+			
+			
+						
+		}
+		
+		// Quick class to define the action of the reset_button
+		class ResetButtonListener implements ActionListener{
+			Player player;
+			graphicMaze parent;
+			
+			public ResetButtonListener(Player p, graphicMaze parent){
+				this.player = p;
+				this.parent = parent;
+			}
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Reset button pressed.");
+				this.player.reset();
+				this.parent.f.repaint();
+				
+			}
+			
+		}
+		
+		// To draw the graphics, divide an imaginary grid into equally sized rectangles so that it's dimensions
+		// we can simplify drawing these blocks to represent each hash of the maze
+		
+		class Player{
+			
+			boolean[][] map;
+			
+			// Instead of using absolute pixel locations, I'll use a relative, block based
+			// positioning system, it'll be easier and it means the logic will be constrained to
+			// the draw logic
+			
+			// Direction macros for moving the character
+			
+			public final static int up = 0;
+			public final static int down = 1;
+			public final static int left = 2;
+			public final static int right = 3;
+			
+			public Color playerColor = Color.blue;
+			
+			public int xPos = 0;
+			public int yPos = 0;
+			
+			public Player(Maze map){
+				this.map = map.map;
+				// Use the parent's map to 
+			}
+			
+			public boolean willCollide(int direction){
+				// TODO: Implement collision logic (using this.map)
+				// Method:
+				//		- calculate the next position
+				//		- return the value of the map in that position
+				//			(in the map, true indicates there's a wall there
+				
+				int nextXPos = this.xPos;
+				int nextYPos = this.yPos;
+				
+				switch(direction){
+				case 0: // up
+					nextYPos--;
+					break;
+				case 1: // down;
+					nextYPos++;
+					break;
+				case 2: // left
+					nextXPos--;
+					break;
+				case 3: // right
+					nextXPos++;
+					break;
+				}
+				
+				// Starting offset = startingPos = 1, 1 - relative to parent.map, account for this
+				
+				return this.map[nextYPos+1][nextXPos+1];
+			}
+			
+			public void reset(){
+				this.xPos = 0;
+				this.yPos = 0;
+			}
+			
+			public void move(int direction) throws IllegalArgumentException{
+				
+				
+				System.out.println("X:"+xPos+"Y:"+yPos);
+				if(!willCollide(direction)){
+					switch(direction){
+					case 0: // up
+						this.yPos -=1;
+						break;
+					case 1: // down
+						this.yPos += 1;
+						break;
+					case 2: // left
+						this.xPos -= 1;
+						break;
+					case 3: // Right
+						this.xPos += 1;
+						break;
+					default:
+						throw(new IllegalArgumentException("Invalid direction!"));
+						
+					}
+				}
+			} 
+		}
+		
+		
+		public void paintComponent(Graphics graphics){
+			
+			System.out.print("paint.");
+			
+			Graphics2D g = (Graphics2D) graphics;
+			
+			// Draw the map...
+			
+			// TODO: Include in the parent class a method to get
+			//		 dimensions of each division.
+			
+			int squareHeight = (this.height-30)/(this.parent.dimensions[1]);
+			int squareWidth = this.width/this.parent.dimensions[0];
+						
+			int currentX = 0;
+			int currentY = 0;
+			
+			for(boolean line[]: this.parent.map){
+				for(boolean item: line){
+					g.setColor(item? Color.black : Color.white);
+					g.fillRect(currentX, currentY, squareWidth,squareHeight);
+					
+					
+					currentX+=squareWidth;					
+				}
+				currentY+=squareHeight;
+				currentX = 0;
+			}
+			
+			// Draw player one - controllable by the user's arrow keys, is defined earlier on
+			
+			System.out.print(this.playerOne);
+
+			if(this.playerOne != null){
+				System.out.println("draw xpos"+this.playerOne.xPos);
+				int playerAbsPosX = (this.playerOne.xPos+1) * squareWidth;
+				int playerAbsPosY = (this.playerOne.yPos+1) * squareHeight;
+				
+				g.setColor(playerOne.playerColor);
+				g.fillOval(playerAbsPosX, playerAbsPosY, squareWidth,squareHeight);
+			}
+			
+			// Define player two - the target that represents the goal of the maze
+			
+			if(this.goal != null){
+				int goalAbsPosX = (this.goal.xPos+1) * squareWidth;
+				int goalAbsPosY = (this.goal.xPos+1) * squareHeight;
+				
+				g.setColor(goal.playerColor);
+				g.fillOval(goalAbsPosX, goalAbsPosY, squareWidth, squareHeight);
+			} else {
+				this.goal = new Player(parent);
+				this.goal.playerColor = Color.red;
+				
+				this.goal.xPos = parent.dimensions[0]-3;
+				this.goal.yPos = parent.dimensions[1]-3;
+				
+				// Repaint the frame, with the goal included
+				paintComponent(g);
+			}
+			
+			
+		}
+		
+		public graphicMaze(Maze parent, Player p){
+			this.parent = parent;
+			boolean[][] map = parent.map;
+			
+			this.playerOne = p;			
+		}
+
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			try{
+				switch(e.getKeyCode()){
+				case KeyEvent.VK_UP:
+					playerOne.move(Player.up);
+					break;
+				case KeyEvent.VK_DOWN:
+					this.playerOne.move(Player.down);
+					break;
+				case KeyEvent.VK_LEFT:
+					this.playerOne.move(Player.left);
+					break;
+				case KeyEvent.VK_RIGHT:
+					System.out.println("X");
+					playerOne.move(Player.right);
+					break;
+				}
+				
+				f.repaint();
+				
+				// Calculate the win condition of the game
+				if(this.playerOne.xPos == this.goal.xPos && this.playerOne.yPos == this.goal.yPos){
+					System.out.println("Player has reached the goal");
+				}
+				
+			} catch (IllegalArgumentException ex){
+				System.err.println("This shouldn't happen");
+				
+			}
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	
+	public boolean[][] getMazeMap(String filename){
+		
+		boolean[][] output = new boolean[256][256];
+		int x = 0;
+		int y = 0;
+		
+		
+		try {
+			Scanner fileInput = new Scanner(new File(filename));
+			
+			while(fileInput.hasNext()){
+				
+				// Convert each line to a char array so it can be iterated through more easily.
+				String sLine = fileInput.nextLine();
+				char[] line = sLine.toCharArray();
+				
+				if(y == 0){
+					output = new boolean[256][sLine.length()];
+					this.dimensions[0] = sLine.length();
+				}
+				
+				for(char item: line){
+										
+					// y++ returns the value of y before it's incremented
+					output[y][x++] = item == '#';
+				}
+				x=0;y++;
+			}
+			this.dimensions[1] = y;
+			
+			// Remove extra array size from output.
+			
+			boolean[][] tmp = new boolean[y][this.dimensions[0]];
+			tmp = output;
+			
+			output = new boolean[y][this.dimensions[0]];
+			output = tmp.clone();
+			
+			// End array trimming logic
+			
+			fileInput.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Error: file not found");
+			e.printStackTrace();
+		}
+		
+		return output;		
+	}
+	
+	public String toString(){
+		String output = new String();
+		int linecount = 1;
+		for(boolean[] line: this.map){
+			for(boolean item: line){
+				output+= item ? "#" : " ";
+				
+				if(item){
+					linecount++;
+				}
+			}
+			if(linecount==0){
+				break;
+			}
+			linecount = 0;
+			output+="\n";
+		}
+		
+		return output;
+	}
+	
+}

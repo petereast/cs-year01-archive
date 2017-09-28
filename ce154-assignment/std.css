@@ -1,0 +1,150 @@
+/* std.css */
+
+@font-face {
+  font-family: header;
+  src: url("Quicksand-Bold.otf");
+}
+
+@font-face {
+  font-family: quicksand;
+  src: url("Quicksand-Regular.otf");
+}
+
+*{
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0px;
+  background-color: #faf9fb;
+  font-family: arial;
+}
+
+body h1:first-child{
+  font-size: 3em;
+  background-color: black;
+  color: #faf9fb;
+  padding: 15px;
+  width: 100%;
+
+}
+
+div#content{
+  margin-left: 15%;
+  padding: 15px;
+  margin-top: 54px;
+}
+
+h1, h2{
+  font-family: header;
+}
+
+div#content h1{
+  font-size: 5em;
+  width: 100%;
+  padding: 15px;
+
+  border: 3px transparent dashed;
+  border-left-color: black;
+  border-radius: 15px;
+}
+
+div.infobox{
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 15px;
+  background-color: #edf741;
+
+  border: 2px solid transparent;
+  border-radius: 6px;
+
+  margin-top: 15px;
+  margin-bottom: 15px;
+
+  color: black;
+}
+
+div.infobox p{
+  font-family: quicksand;
+}
+
+div.pane{
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  width: 15%;
+  padding: 15px;
+  background-color: #68edc6;
+  color: #faf9fb;
+}
+
+div.pane div.left {
+  left: 0px;
+}
+
+div#deploy_timestamp{
+  position: fixed;
+  top: 0px;
+  right: 0px;
+}
+
+div.header.top{
+  position: fixed;
+  top: 0px;
+  left: 15%;
+  right: 0px;
+  background: #1d4136;
+  padding: 15px;
+  color: #faf9fb;
+}
+
+div.header.top nav{
+  display: inline;
+}
+
+div.header.top form{
+  display:inline;
+}
+
+div.header.top nav a{
+  padding: 5px;
+
+  background: transparent;
+  margin-right: 5px;
+  text-decoration: none;
+  color: #faf9fb;
+  border: 2px #faf9fb solid;
+  border-radius: 3px;
+  font-size:  1.2em;
+  font-family: header;
+}
+
+form#user_login_form{
+  background-color: #eee;
+  padding: 60px;
+}
+
+form#user_login_form label{
+  margin-top: 5px;
+  display:inline-block;
+  width: 250px;
+}
+
+form#user_login_form input{
+  margin-top: 10px;
+    
+}
+
+div#applied_promo_container{
+	padding: 15px;
+}
+
+div#applied_promo_container p{
+  padding: 5px;
+  margin: 5px;
+  background-color: #000;
+  color: white;
+}
+

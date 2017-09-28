@@ -1,0 +1,69 @@
+package Assignment;
+
+public class Exercise2 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		double[][] array = {
+				{3, -1, -4, 0},
+				{5, -2, 9, 6},
+				{8, 2, 4, -9}
+		};
+		double mean = calculateMean(array);
+		System.out.println("Mean = "mean);
+		findClosest(array, mean);
+	}
+	
+	public static double calculateMean(double[][] array){
+		
+		double mean = 0;
+		int i = 0;
+		for(double[] line: array){
+			for(double item: line){
+				mean += item;
+				i++;
+			}
+		}
+		
+		return mean/i;
+	}
+	
+	public static int[] findClosest(double[][] array, double mean){
+		
+		int[] currentClosestPos = {0, 0};
+		int[] currentPos = {0, 0};
+		
+		double currentClosestValue = Double.MAX_VALUE;
+		double closestItem = Double.NaN;
+		double distance = 0;
+		
+		for(double[] line: array){
+			for(double item: line){
+				distance = Math.abs(item-mean);
+				if(distance < currentClosestValue){
+					currentClosestValue = distance;
+					currentClosestPos = currentPos;
+					closestItem = item;
+					
+				}
+				currentPos[1]++;
+			}
+			currentPos[1] = 0;
+			currentPos[0]++;
+		}
+		// Data in the format demonstrated
+		System.out.println("Closest array element = "+closestItem);
+		// System.out.println(currentClosestPos[1]+", "+currentClosestPos[0]+", "+currentClosestValue);
+
+		return currentClosestPos;
+	}
+	
+	public void testClosestToMean(){
+		double mean = 
+	}
+
+}

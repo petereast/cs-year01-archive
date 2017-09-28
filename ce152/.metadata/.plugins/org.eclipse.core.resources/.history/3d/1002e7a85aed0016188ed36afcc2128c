@@ -1,0 +1,32 @@
+package lab3;
+
+public class Minesweeper {
+
+	boolean[][] board;
+	
+	void generateBoard(int h, int w, float p){
+		this.board = new boolean[w+2][h+2];
+		int x, y;
+		
+		for(x = 1; x != w; x++){
+			for(y = 1; y != h; y++){
+				this.board[x][y] = (boolean)(Math.random() > p);
+			}
+		}
+		
+	}
+	
+	void displayBoard(){
+		String line = "";
+		
+		for(boolean[] mineline: this.board){
+			for(boolean m: mineline){
+				if(m)
+					line+="*";
+				else
+					line+=".";
+			}
+		}
+	}
+	
+}
